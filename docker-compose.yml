@@ -16,9 +16,10 @@ services:
       - "5044:5044"  # Logstash Beats input
       - "8000:8000"  # upload server
     volumes:
-      - logstash-uploads:/usr/share/logstash/data/uploads  # Volume for uploads
-      - elasticsearch-data:/usr/share/elasticsearch/data  # Persistent volume for Elasticsearch
-      - kibana-data:/usr/share/kibana/data  # Persistent volume for Kibana dashboards
+      - /usr/share/logstash/data/uploads:/usr/share/logstash/data/uploads  # Volume for uploads
+      - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data  # Persistent volume for Elasticsearch
+      - /usr/share/kibana/data:/usr/share/kibana/data  # Persistent volume for Kibana dashboards
+      - /usr/share/logstash/data/:/usr/share/logstash/data/ #logstash volume
 
 volumes:
   logstash-uploads:
