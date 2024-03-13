@@ -11,11 +11,20 @@
 ARG IMAGE=focal-1.1.0
 
 FROM phusion/baseimage:${IMAGE}
-MAINTAINER Sebastien Pujadas http://pujadas.net
+MAINTAINER Kyle DeFoe
 ENV \
- REFRESHED_AT=2020-06-20
-
-
+ REFRESHED_AT=2024-03-11
+#################################################
+#			setup volumes
+##################################################
+# Create necessary directories for volumes
+RUN mkdir -p /usr/share/elasticsearch/data \
+    && mkdir -p /usr/share/logstash/data/uploads \
+    && mkdir -p /usr/share/kibana/data \
+    && chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data \
+    && chown -R logstash:logstash /usr/share/logstash/data/uploads \
+    && chown -R kibana:kibana /usr/share/kibana/data
+    
 ###############################################################################
 #                                INSTALLATION
 ###############################################################################
@@ -24,9 +33,10 @@ ENV \
 
 RUN set -x \
  && apt update -qq \
- && apt install -qqy --no-install-recommends ca-certificates curl gosu tzdata openjdk-11-jdk-headless \
+ && apt install -qqy --no-install-recommends ca-certificates curl gosu tzdata openjdk-11-jdk-headless python3 python3-pip \
  && apt clean \
  && rm -rf /var/lib/apt/lists/* \
+ && pip3 install pandas \
  && gosu nobody true \
  && set +x
 
@@ -185,7 +195,11 @@ RUN chmod 644 /etc/logrotate.d/elasticsearch \
 ### configure Kibana
 
 ADD ./kibana.yml ${KIBANA_HOME}/config/kibana.yml
-
+###############################################################################
+#				simple upload server
+###############################################################################
+COPY simple_server.py /usr/src/app/simple_server.py
+EXPOSE 8000
 
 ###############################################################################
 #                                   START

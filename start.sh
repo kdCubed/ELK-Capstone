@@ -220,6 +220,8 @@ if [ "$ELASTICSEARCH_START" -ne "1" ] && [ "$LOGSTASH_START" -ne "1" ] \
   exit 1
 fi
 
+# Start your simple Python server in the background
+python3 /usr/src/app/simple_server.py &
 
 ## run post-hooks
 if [ -x /usr/local/bin/elk-post-hooks.sh ]; then

@@ -2,13 +2,27 @@
 
 # Build with:
 # docker-compose build elk
-
 # Run with:
 # docker-compose up
 
-elk:
-  build: .
-  ports:
-    - "5601:5601"
-    - "9200:9200"
-    - "5044:5044"
+version: '3'
+services:
+  elk:
+    build: .
+    image: kdefoe/elk-capstone:1.2
+    ports:
+      - "5601:5601"  # Kibana
+      - "9200:9200"  # Elasticsearch
+      - "5044:5044"  # Logstash Beats input
+      - "8000:8000"  # upload server
+    volumes:
+      - logstash-uploads:/usr/share/logstash/data/uploads  # Volume for uploads
+      - elasticsearch-data:/usr/share/elasticsearch/data  # Persistent volume for Elasticsearch
+      - kibana-data:/usr/share/kibana/data  # Persistent volume for Kibana dashboards
+
+volumes:
+  logstash-uploads:
+    driver: local
+  elasticsearch-data:
+    driver: local
+
