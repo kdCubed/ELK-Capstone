@@ -10,7 +10,7 @@ See the [ELK Docker image documentation web page](http://elk-docker.readthedocs.
 
 ### Docker Hub
 
-This image is hosted on Docker Hub at [https://hub.docker.com/r/sebp/elk/](https://hub.docker.com/r/sebp/elk/).
+This image is hosted on Docker Hub at docker pull kdefoe/elk-capstone
 
 The following tags are available:
 
@@ -54,5 +54,5 @@ The following tags are available:
 
 ### About
 
-Written by [Sébastien Pujadas](https://pujadas.net), released under the [Apache 2 license](https://www.apache.org/licenses/LICENSE-2.0).
+
 # ELK-Capstone
