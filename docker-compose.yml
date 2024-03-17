@@ -26,4 +26,6 @@ volumes:
     driver: local
   elasticsearch-data:
     driver: local
+  kibana-data:
+    driver: local
 

@@ -1,7 +1,6 @@
 # Dockerfile for ELK stack
 # Elasticsearch, Logstash, Kibana 8.11.1
 
-# Build with:
 # docker build -t <repo-user>/elk .
 
 # Run with:
@@ -21,11 +20,11 @@ ENV \
 RUN mkdir -p /usr/share/elasticsearch/data \
     && mkdir -p /usr/share/logstash/data/uploads \
     && mkdir -p /usr/share/kibana/data \
-    && groupadd -r elasticsearch \
+    && groupadd -r elasticsearch || true \
     && useradd -r -g elasticsearch elasticsearch \
-    && groupadd -r logstash \
+    && groupadd -r logstash || true \
     && useradd -r -g logstash logstash \
-    && groupadd -r kibana \
+    && groupadd -r kibana || true \
     && useradd -r -g kibana kibana \
     && chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data \
     && chown -R logstash:logstash /usr/share/logstash/data/uploads \
@@ -77,8 +76,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
  && curl -O https://artifacts.elastic.co/downloads/elasticsearch/${ES_PACKAGE} \
  && tar xzf ${ES_PACKAGE} -C ${ES_HOME} --strip-components=1 \
  && rm -f ${ES_PACKAGE} \
- && groupadd -r elasticsearch -g ${ES_GID} \
- && useradd -r -s /usr/sbin/nologin -M -d ${ES_HOME} -c "Elasticsearch service user" -u ${ES_UID} -g elasticsearch elasticsearch \
+ && groupmod -g ${ES_GID} elasticsearch \
+ && usermod -s /usr/sbin/nologin -d ${ES_HOME} -c "Elasticsearch service user" -g elasticsearch -u ${ES_UID} -l elasticsearch elasticsearch \
+# && useradd -r -s /usr/sbin/nologin -M -d ${ES_HOME} -c "Elasticsearch service user" -u ${ES_UID} -g elasticsearch elasticsearch \
  && mkdir -p /var/log/elasticsearch ${ES_PATH_CONF} ${ES_PATH_CONF}/scripts ${ES_PATH_CONF}/jvm.options.d /var/lib/elasticsearch ${ES_PATH_BACKUP} \
  && chown -R elasticsearch:elasticsearch ${ES_HOME} /var/log/elasticsearch /var/lib/elasticsearch ${ES_PATH_CONF} ${ES_PATH_BACKUP}
 
@@ -100,8 +100,9 @@ RUN mkdir ${LOGSTASH_HOME} \
  && curl -O https://artifacts.elastic.co/downloads/logstash/${LOGSTASH_PACKAGE} \
  && tar xzf ${LOGSTASH_PACKAGE} -C ${LOGSTASH_HOME} --strip-components=1 \
  && rm -f ${LOGSTASH_PACKAGE} \
- && groupadd -r logstash -g ${LOGSTASH_GID} \
- && useradd -r -s /usr/sbin/nologin -M -d ${LOGSTASH_HOME} -c "Logstash service user" -u ${LOGSTASH_UID} -g logstash logstash \
+ && groupmod -g ${LOGSTASH_GID} logstash \
+ && usermod -s /usr/sbin/nologin -d ${LOGSTASH_HOME} -c "Logstash service user" -u ${LOGSTASH_UID} -g logstash logstash \
+ #&& useradd -r -s /usr/sbin/nologin -M -d ${LOGSTASH_HOME} -c "Logstash service user" -u ${LOGSTASH_UID} -g logstash logstash \
  && mkdir -p /var/log/logstash ${LOGSTASH_PATH_CONF}/conf.d \
  && chown -R logstash:logstash ${LOGSTASH_HOME} /var/log/logstash ${LOGSTASH_PATH_CONF}
 
@@ -121,8 +122,9 @@ RUN mkdir ${KIBANA_HOME} \
  && curl -O https://artifacts.elastic.co/downloads/kibana/${KIBANA_PACKAGE} \
  && tar xzf ${KIBANA_PACKAGE} -C ${KIBANA_HOME} --strip-components=1 \
  && rm -f ${KIBANA_PACKAGE} \
- && groupadd -r kibana -g ${KIBANA_GID} \
- && useradd -r -s /usr/sbin/nologin -d ${KIBANA_HOME} -c "Kibana service user" -u ${KIBANA_UID} -g kibana kibana \
+ && groupmod -g ${KIBANA_GID} kibana \
+ && usermod -s /usr/sbin/nologin -d ${KIBANA_HOME} -c "Kibana service user" -u ${KIBANA_UID} -g kibana kibana \
+ #&& useradd -r -s /usr/sbin/nologin -d ${KIBANA_HOME} -c "Kibana service user" -u ${KIBANA_UID} -g kibana kibana \
  && mkdir -p /var/log/kibana \
  && chown -R kibana:kibana ${KIBANA_HOME} /var/log/kibana
 
