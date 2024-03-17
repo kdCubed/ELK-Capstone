@@ -21,6 +21,12 @@ ENV \
 RUN mkdir -p /usr/share/elasticsearch/data \
     && mkdir -p /usr/share/logstash/data/uploads \
     && mkdir -p /usr/share/kibana/data \
+    && groupadd -r elasticsearch \
+    && useradd -r -g elasticsearch elasticsearch \
+    && groupadd -r logstash \
+    && useradd -r -g logstash logstash \
+    && groupadd -r kibana \
+    && useradd -r -g kibana kibana \
     && chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data \
     && chown -R logstash:logstash /usr/share/logstash/data/uploads \
     && chown -R kibana:kibana /usr/share/kibana/data
